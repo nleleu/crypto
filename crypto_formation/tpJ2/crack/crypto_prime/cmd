@@ -1,0 +1,27 @@
+nicolas@PC-nicolas:/media/Data/projects/c++/crypto_prime$ openssl genrsa -out toto.key 64
+Generating RSA private key, 64 bit long modulus
+.+++++++++++++++++++++++++++
+.+++++++++++++++++++++++++++
+e is 65537 (0x10001)
+nicolas@PC-nicolas:/media/Data/projects/c++/crypto_prime$ openssl rsa -in toto.key -text
+
+
+3000000000
+4000000000
+
+13714850051337412009
+Elapsed time : 0.630932 seconds
+
+settings : bornes inf pour primes : 
+15114307486000000000
+settings : bornes sup pour primes : 
+15114307486330924284
+Find primes from 15114307486000000000 to 15114307486330924284 : 197.030000 seconds
+saisir n : 
+221602026508399035089328746723000974549
+p = 15114307486330924283
+q = 14661738667736609903
+u = -10021603533513250017090769059207056915
+v = 10021603533513250018437343971239040924
+Elapsed time : 0.410000 seconds
+saisir n :

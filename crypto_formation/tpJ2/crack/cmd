@@ -1,0 +1,65 @@
+openssl asn1parse -genconf key.txt -out newKey.der
+openssl rsa -in newKey.der -inform der  -out private.priv
+openssl rsautl -inkey private.priv -decrypt -in KeyCipher.txt -out plainDec
+openssl enc -aes-256-cbc -nosalt -d -kfile plainDec -in MessageCipher.txt -out message_sym
+
+openssl genrsa -out 128.key 128
+echo "ibase=16;00A6B6FF73AF01CA5B122AA7428E2FFCD5" | bc
+openssl rsa -in 128.key -text
+
+
+
+One way to do this is to generate a DER encoded key using OpenSSL's asn1parse command's -genconf option.
+
+You'll need to construct an input file for asn1parse -genconf to produce an RSA key in the standard format (per RFC 3447). The syntax for asn1parse -genconf is given here: http://www.openssl.org/docs/crypto/ASN1_generate_nconf.html and indeed, it already has an example for constructing an RSA key.
+
+You need to calculate a few more values (specifically, d mod (p-1), d mod (q-1) and q^-1 mod p. For the values of p, q, d you gave, these are:
+
+d mod(p-1) = 23 mod 16 = 7
+
+d mod(q-1) = 23 mod 10 = 3
+
+q^-1 mod p = 14
+
+Put this all together into a text file in the appropriate format:
+
+asn1=SEQUENCE:rsa_key
+
+[rsa_key]
+version=INTEGER:0
+modulus=INTEGER:187
+pubExp=INTEGER:7
+privExp=INTEGER:23
+p=INTEGER:17
+q=INTEGER:11
+e1=INTEGER:7
+e2=INTEGER:3
+coeff=INTEGER:14
+
+To construct the binary DER file:
+
+openssl asn1parse -genconf  -out newkey.der
+
+You can then run this through OpenSSL's rsa command to confirm:
+
+openssl rsa -in newkey.der -inform der -text -check
+
+Which should output:
+
+Private-Key: (8 bit)
+modulus: 187 (0xbb)
+publicExponent: 7 (0x7)
+privateExponent: 23 (0x17)
+prime1: 17 (0x11)
+prime2: 11 (0xb)
+exponent1: 7 (0x7)
+exponent2: 3 (0x3)
+coefficient: 14 (0xe)
+RSA key ok
+writing RSA key
+-----BEGIN RSA PRIVATE KEY-----
+MBwCAQACAgC7AgEHAgEXAgERAgELAgEHAgEDAgEO
+-----END RSA PRIVATE KEY-----
+
+You can use this to encrypt data with OpenSSL's rsautl command (though with this key you're limited to encrypting just a single byte of data providing that byte is also less than 187).
+

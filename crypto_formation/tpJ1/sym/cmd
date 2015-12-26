@@ -1,0 +1,15 @@
+openssl enc -des-cbc -k passwd -in Grand.txt -out Grand.cipher -base64  -K FB22881684E1864D -iv 36D1456C26A3670D
+
+enc : 
+openssl enc -des-cbc -k passwd -in plain.txt -out cipher_base64.txt -base64
+
+dec :
+openssl enc -des-cbc -d -k passwd -in cipher_base64.txt -out newPlain.txt -base64
+
+options :
+nosalt
+
+
+openssl rand -out Grand.txt 1000000000
+
+openssl dgst -sha1 dgstPlain.txt

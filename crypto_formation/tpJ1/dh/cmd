@@ -1,0 +1,15 @@
+openssl genpkey -genparam -algorithm DH -out pg.pem
+openssl pkeyparam -in pg.pem -text
+openssl genpkey -paramfile pg.pem -out a.pem
+openssl genpkey -paramfile pg.pem -out b.pem
+root@kali:~/tpJ1/dh# openssl pkey -in a.pem -pubout -out A.pem
+root@kali:~/tpJ1/dh# openssl genpkey -paramfile pg.pem -out b.pem
+root@kali:~/tpJ1/dh# openssl pkey -in b.pem -pubout -out B.pem
+
+
+root@kali:~/tpJ1/dh# openssl pkeyutl -derive -inkey b.pem -peerkey A.pem -out secretb.bin
+root@kali:~/tpJ1/dh# openssl pkeyutl -derive -inkey a.pem -peerkey B.pem -out secreta.bin
+root@kali:~/tpJ1/dh# vimdiff secretb.bin secreta.bin
+
+openssl enc -des-cbc -in message -out messageCipher -kfile secreta.bin 
+root@kali:~/tpJ1/dh# openssl enc -d -des-cbc -in messageCipher -out messageDec -kfile secretb.bin

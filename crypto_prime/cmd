@@ -1,0 +1,13 @@
+nicolas@PC-nicolas:/media/Data/projects/c++/crypto_prime$ openssl genrsa -out toto.key 64
+Generating RSA private key, 64 bit long modulus
+.+++++++++++++++++++++++++++
+.+++++++++++++++++++++++++++
+e is 65537 (0x10001)
+nicolas@PC-nicolas:/media/Data/projects/c++/crypto_prime$ openssl rsa -in toto.key -text
+
+
+3000000000
+4000000000
+
+13714850051337412009
+Elapsed time : 0.630932 seconds

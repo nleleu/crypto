@@ -1,0 +1,12 @@
+openssl ciphers -v | grep EC
+openssl ecparam -out key.pem -name prime256v1 -genkey
+openssl ec -in key.pem -pubout -out public.pem
+echo  “my data” | openssl dgst -ecdsa-with-SHA1 -sign key.pem -out signature.binecho  “my data” > data
+root@kali:~/crypto_formation/tpJ3/elliptic# openssl dgst  -sha1 -verify public.pem   -signature signature.bin data
+
+openssl ecparam -out ca-key.pem -genkey -name prime256v1
+openssl req -x509 -new -key ca-key.pem -out ca-cert.pem
+
+openssl ecparam -out server-key.pem -genkey -name prime256v1 -noout
+openssl req -new -key server-key.pem -out server-csr.pem
+openssl x509 -req -days 365 -in server-csr.pem -CA ca-cert.pem -CAkey ca-key.pem -set_serial 01 -out server-cert.pem

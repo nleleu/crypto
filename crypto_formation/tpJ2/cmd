@@ -1,0 +1,14 @@
+openssl genrsa -out private.priv 1024
+openssl rsa -in private.priv -pubout -out public.pub
+openssl rsa -in private.priv -text -modulus
+openssl rsautl -inkey public_nl.pub -pubin -encrypt -in plain -out cipherText
+openssl rsautl -inkey private.priv -decrypt -in cipherText -out plainDec
+openssl rand -hex -out symKey.key 8
+sha1sum symKey.key
+openssl rsautl -inkey private.priv -encrypt -in hashKey -out hashKeySigned
+openssl rsautl -inkey private.priv -sign -in hashKey -out hashKeySigned
+openssl rsautl -inkey public_nl.pub -pubin -encrypt -in symKey.key -out symKey_encrypted.key
+openssl rsautl -inkey public_nl.pub -pubin -in hashKeySigned -verify
+
+openssl enc -des-cbc -kfile symKey.key -in plain -out message_sym
+openssl enc -d -des-cbc -kfile symKey.key -in message_sym -out message_sym_out
